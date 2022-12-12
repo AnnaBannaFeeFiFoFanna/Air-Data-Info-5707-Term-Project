@@ -1,0 +1,40 @@
+DROP TABLE IF EXISTS Airport CASCADE;
+
+CREATE TABLE Airport (
+Airport_ID char(3) NOT NULL,
+Airport_ZipCode char(5) NOT NULL,
+Airport_City varchar(30) NOT NULL,
+Airport_State char(2) NOT NULL,
+CONSTRAINT Airport PRIMARY KEY (Airport_ID)
+);
+
+INSERT INTO Airport VALUES ('ATL', '30337', 'Atlanta', 'GA');
+INSERT INTO Airport VALUES ('BWI', '21240', 'Baltimore', 'MD');
+INSERT INTO Airport VALUES ('BOS', '02128', 'Boston', 'MA');
+INSERT INTO Airport VALUES ('CLT', '28208', 'Charlotte', 'NC');
+INSERT INTO Airport VALUES ('ORD', '60018', 'Chicago', 'IL');
+INSERT INTO Airport VALUES ('MDW', '60638', 'Chicago', 'IL');
+INSERT INTO Airport VALUES ('DAL', '75235', 'Dallas', 'TX');
+INSERT INTO Airport VALUES ('DFW', '75261', 'Dallas/Fort Worth', 'TX');
+INSERT INTO Airport VALUES ('DEN', '80249', 'Denver', 'CO');
+INSERT INTO Airport VALUES ('DTW', '48174', 'Detroit', 'MI');
+INSERT INTO Airport VALUES ('FLL', '33315', 'Fort Lauderdale', 'FL');
+INSERT INTO Airport VALUES ('IAH', '77396', 'Houston', 'TX');
+INSERT INTO Airport VALUES ('LAS', '89119', 'Las Vegas', 'NV');
+INSERT INTO Airport VALUES ('LAX', '90009', 'Los Angeles', 'CA');
+INSERT INTO Airport VALUES ('MIA', '33126', 'Miami', 'FL');
+INSERT INTO Airport VALUES ('MSP', '55450', 'Minneapolis', 'MN');
+INSERT INTO Airport VALUES ('BNA', '37217', 'Nashville', 'TN');
+INSERT INTO Airport VALUES ('LGA', '11371', 'New York', 'NY');
+INSERT INTO Airport VALUES ('JFK', '11430', 'New York', 'NY');
+INSERT INTO Airport VALUES ('EWR', '07114', 'Newark', 'NJ');
+INSERT INTO Airport VALUES ('MCO', '32827', 'Orlando', 'FL');
+INSERT INTO Airport VALUES ('PHL', '19113', 'Philadelphia', 'PA');
+INSERT INTO Airport VALUES ('PHX', '85034', 'Phoenix', 'AZ');
+INSERT INTO Airport VALUES ('SLC', '84116', 'Salt Lake City', 'UT');
+INSERT INTO Airport VALUES ('SAN', '92101', 'San Diego', 'CA');
+INSERT INTO Airport VALUES ('SFO', '94128', 'San Francisco', 'CA');
+INSERT INTO Airport VALUES ('SEA', '98188', 'Seattle', 'WA');
+INSERT INTO Airport VALUES ('TPA', '33614', 'Tampa', 'FL');
+INSERT INTO Airport VALUES ('DCA', '22202', 'Washington', 'DC');
+INSERT INTO Airport VALUES ('IAD', '20166', 'Washington', 'DC');
