@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS Delay_Cause_Op_Carrier CASCADE;
+DROP TABLE IF EXISTS DSCRM_By_Type CASCADE;
+DROP TABLE IF EXISTS Airline_Complaints CASCADE;
 DROP TABLE IF EXISTS Mishandling_By_Op_Carrier CASCADE;
 DROP TABLE IF EXISTS Airline_Arr_Op_Carrier CASCADE;
 DROP TABLE IF EXISTS Monthly_Enplanements CASCADE;
@@ -30,7 +33,8 @@ Month_and_Year DATE NOT NULL,
 WNDW_START TIME NOT NULL,
 WNDW_END TIME NOT NULL,
 CONSTRAINT PKAirport_DateTime_ID PRIMARY KEY (Airport_Date_ID),
-CONSTRAINT FKAirport_ID FOREIGN KEY (Airport_ID) REFERENCES Airport(Airport_ID) ON DELETE CASCADE
+CONSTRAINT FKAirport_ID FOREIGN KEY (Airport_ID)
+REFERENCES Airport(Airport_ID) ON DELETE CASCADE
 );
 
 CREATE TABLE Timeliness_By_Airport (
@@ -38,7 +42,8 @@ Airport_Window CHAR(10) NOT NULL,
 /*Data is stored as first of month, but is cumulative total for month.*/
 PRCNT_ARR_ON_TIME FLOAT NOT NULL,
 PRCNT_DEP_ON_TIME FLOAT NOT NULL,
-CONSTRAINT FKAirport_DateTime_ID FOREIGN KEY (Airport_Window) REFERENCES Airport_DateTime_ID(Airport_Date_ID) ON DELETE CASCADE
+CONSTRAINT FKAirport_DateTime_ID FOREIGN KEY (Airport_Window)
+REFERENCES Airport_DateTime_ID(Airport_Date_ID) ON DELETE CASCADE
 );
 
 CREATE TABLE Flight_Num_Org_and_Dest (
@@ -47,7 +52,8 @@ Airline_ID CHAR(8) NOT NULL,
 Origin_Airport CHAR(3) NOT NULL,
 Dest_Airport CHAR(3) NOT NULL,
 CONSTRAINT PKFlight_Num_Org_and_Dest PRIMARY KEY (Flight_Number),
-CONSTRAINT FKAirline FOREIGN KEY (Airline_ID) REFERENCES Airline(Airline_ID) ON DELETE CASCADE
+CONSTRAINT FKAirline FOREIGN KEY (Airline_ID)
+REFERENCES Airline(Airline_ID) ON DELETE CASCADE
 );
 
 CREATE TABLE Excessive_Tarmac_Delays (
@@ -59,7 +65,8 @@ Org_or_Dest_Airport CHAR(11) NOT NULL,
 Diversion_Airport CHAR(3),
 Length_of_Delay TIME NOT NULL,
 CONSTRAINT PKExcessive_Tarmac_Delays PRIMARY KEY (Tarmac_Incident_ID),
-CONSTRAINT FKAirline_ID FOREIGN KEY (Airline_ID) REFERENCES Airline(Airline_ID) ON DELETE CASCADE
+CONSTRAINT FKAirline_ID FOREIGN KEY (Airline_ID)
+REFERENCES Airline(Airline_ID) ON DELETE CASCADE
 );
 
 CREATE TABLE Monthly_Enplanements (
@@ -67,10 +74,11 @@ Airline_Date_ID CHAR(13) NOT NULL,
 Airline_ID CHAR(8) NOT NULL,
 /*Data is stored as first of month, but is cumulative total for month.*/
 Month_and_Year DATE NOT NULL,
-Enplanements INT NOT NULL,
+Enplanements INT,
 /*Airline_Date_ID might be the only valid Key.*/
 CONSTRAINT PKAirline_Date_ID PRIMARY KEY (Airline_Date_ID),
-CONSTRAINT FKMonthly_Enplanements_Airline_ID FOREIGN KEY (Airline_ID) REFERENCES Airline(Airline_ID) ON DELETE CASCADE
+CONSTRAINT FKMonthly_Enplanements_Airline_ID FOREIGN KEY (Airline_ID)
+REFERENCES Airline(Airline_ID) ON DELETE CASCADE
 );
 
 CREATE TABLE Airline_Arr_Op_Carrier (
@@ -79,10 +87,13 @@ Airline_ID CHAR(8) NOT NULL,
 Airline_Date_ID CHAR(13) NOT NULL,
 Number_of_Arrivals INT NOT NULL,
 Percent_Arr_On_Time FLOAT NOT NULL,
-CONSTRAINT FKAirline_Arr_Op_CarrierAirport_ID FOREIGN KEY (Airport_ID) REFERENCES Airport(Airport_ID) ON DELETE CASCADE,
-CONSTRAINT FKAirline_Arr_Op_CarrierAirline_ID FOREIGN KEY (Airline_ID) REFERENCES Airline(Airline_ID) ON DELETE CASCADE,
+CONSTRAINT FKAirline_Arr_Op_CarrierAirport_ID FOREIGN KEY (Airport_ID)
+REFERENCES Airport(Airport_ID) ON DELETE CASCADE,
+CONSTRAINT FKAirline_Arr_Op_CarrierAirline_ID FOREIGN KEY (Airline_ID)
+REFERENCES Airline(Airline_ID) ON DELETE CASCADE,
 /*Airline_Date_ID might be the only valid Foreign Key.*/
-CONSTRAINT FKAirline_Arr_Op_Carrier_Airline_Date_ID FOREIGN KEY (Airline_Date_ID) REFERENCES Monthly_Enplanements(Airline_Date_ID) ON DELETE CASCADE
+CONSTRAINT FKAirline_Arr_Op_Carrier_Airline_Date_ID FOREIGN KEY (Airline_Date_ID)
+REFERENCES Monthly_Enplanements(Airline_Date_ID) ON DELETE CASCADE
 );
 
 CREATE TABLE Mishandling_By_Op_Carrier (
@@ -91,7 +102,38 @@ WHLCHR_SCT_ENPLANED INT NOT NULL,
 WHLCHR_SCT_MISHAND INT NOT NULL,
 BAGS_ENPLANED INT NOT NULL,
 BAGS_MISHAND INT NOT NULL,
-CONSTRAINT FKMishandling_Airline_Date_ID FOREIGN KEY (Airline_Date_ID) REFERENCES Monthly_Enplanements(Airline_Date_ID) ON DELETE CASCADE
+CONSTRAINT FKMishandling_Airline_Date_ID FOREIGN KEY (Airline_Date_ID)
+REFERENCES Monthly_Enplanements(Airline_Date_ID) ON DELETE CASCADE
+);
+
+CREATE TABLE Airline_Complaints (
+Airline_Date_ID CHAR(13) NOT NULL,
+FLGHT_PRB_C_BY_D_RCVD INT NOT NULL,
+OVERSLS_C_BY_D_RCVD INT NOT NULL,
+R_TKT_BRD_C_BY_D_RCVD INT NOT NULL,
+Fares_C_BY_D_RCVD INT NOT NULL,
+Refunds_C_BY_D_RCVD INT NOT NULL,
+Baggage_C_BY_D_RCVD INT NOT NULL,
+Cust_Serv_C_BY_D_RCVD INT NOT NULL,
+Disability_C_BY_D_RCVD INT NOT NULL,
+ADVRTSNG_C_BY_D_RCVD INT NOT NULL,
+Animals_C_BY_D_RCVD INT NOT NULL,
+Other_C_BY_D_RCVD INT NOT NULL,
+CONSTRAINT FKAirline_Complaints_Airline_Date_ID FOREIGN KEY (Airline_Date_ID)
+REFERENCES Monthly_Enplanements(Airline_Date_ID) ON DELETE CASCADE
+);
+
+CREATE TABLE DSCRM_By_Type (
+Airline_Date_ID CHAR(13) NOT NULL,
+DSCRM_RACE_C_BY_D_RCVD INT NOT NULL,
+DSCRM_ANC_C_BY_D_RCVD INT NOT NULL,
+DSCRM_NAT_C_BY_D_RCVD INT NOT NULL,
+DSCRM_COL_C_BY_D_RCVD INT NOT NULL,
+DSCRM_REL_C_BY_D_RCVD INT NOT NULL,
+DSCRM_SEX_C_BY_D_RCVD INT NOT NULL,
+DSCRM_OTH_C_BY_D_RCVD INT NOT NULL,
+CONSTRAINT FKDSCRM_Airline_Date_ID FOREIGN KEY (Airline_Date_ID)
+REFERENCES Monthly_Enplanements(Airline_Date_ID) ON DELETE CASCADE
 );
 
 INSERT INTO Airport VALUES ('ATL', '30337', 'Atlanta', 'GA');
@@ -1339,6 +1381,28 @@ INSERT INTO Monthly_Enplanements VALUES ('012ENDEA44713', '012ENDEA', '2022-06-0
 INSERT INTO Monthly_Enplanements VALUES ('016HAWAI44713', '016HAWAI', '2022-06-01', '922057');
 INSERT INTO Monthly_Enplanements VALUES ('019MESAA44713', '019MESAA', '2022-06-01', '703966');
 INSERT INTO Monthly_Enplanements VALUES ('017HORIZ44713', '017HORIZ', '2022-06-01', '560178');
+INSERT INTO Monthly_Enplanements VALUES ('005AVELO44774', '005AVELO', '2022-08-01', null);
+INSERT INTO Monthly_Enplanements VALUES ('005AVELO44743', '005AVELO', '2022-07-01', null);
+INSERT INTO Monthly_Enplanements VALUES ('007BREEZ44774', '007BREEZ', '2022-08-01', null);
+INSERT INTO Monthly_Enplanements VALUES ('007BREEZ44743', '007BREEZ', '2022-07-01', null);
+INSERT INTO Monthly_Enplanements VALUES ('007BREEZ44713', '007BREEZ', '2022-06-01', null);
+INSERT INTO Monthly_Enplanements VALUES ('008CAPEA44774', '008CAPEA', '2022-08-01', null);
+INSERT INTO Monthly_Enplanements VALUES ('011EASTE44743', '011EASTE', '2022-07-01', null);
+INSERT INTO Monthly_Enplanements VALUES ('030OTHER44774', '030OTHER', '2022-08-01', null);
+INSERT INTO Monthly_Enplanements VALUES ('030OTHER44743', '030OTHER', '2022-07-01', null);
+INSERT INTO Monthly_Enplanements VALUES ('030OTHER44713', '030OTHER', '2022-06-01', null);
+INSERT INTO Monthly_Enplanements VALUES ('021PIEDM44774', '021PIEDM', '2022-08-01', null);
+INSERT INTO Monthly_Enplanements VALUES ('021PIEDM44743', '021PIEDM', '2022-07-01', null);
+INSERT INTO Monthly_Enplanements VALUES ('021PIEDM44713', '021PIEDM', '2022-06-01', null);
+INSERT INTO Monthly_Enplanements VALUES ('024SILVE44774', '024SILVE', '2022-08-01', null);
+INSERT INTO Monthly_Enplanements VALUES ('024SILVE44743', '024SILVE', '2022-07-01', null);
+INSERT INTO Monthly_Enplanements VALUES ('024SILVE44713', '024SILVE', '2022-06-01', null);
+INSERT INTO Monthly_Enplanements VALUES ('028SUNCO44774', '028SUNCO', '2022-08-01', null);
+INSERT INTO Monthly_Enplanements VALUES ('028SUNCO44743', '028SUNCO', '2022-07-01', null);
+INSERT INTO Monthly_Enplanements VALUES ('028SUNCO44713', '028SUNCO', '2022-06-01', null);
+INSERT INTO Monthly_Enplanements VALUES ('020OTHER44774', '020OTHER', '2022-08-01', null);
+INSERT INTO Monthly_Enplanements VALUES ('020OTHER44743', '020OTHER', '2022-07-01', null);
+INSERT INTO Monthly_Enplanements VALUES ('020OTHER44713', '020OTHER', '2022-06-01', null);
 
 /*Current data only for August 2022 (USDOT October 2022 report), and only Alaska Airlines, Allegiant Air, American Airlines, and Delta Air Lines.*/
 INSERT INTO Airline_Arr_Op_Carrier VALUES ('ATL', '002ALASK', '002ALASK44774', '124', '89.5');
@@ -1427,6 +1491,97 @@ INSERT INTO Mishandling_By_Op_Carrier VALUES ('029UNITE44774', '8948', '111', '4
 INSERT INTO Mishandling_By_Op_Carrier VALUES ('029UNITE44743', '9381', '104', '4375410', '26493');
 INSERT INTO Mishandling_By_Op_Carrier VALUES ('029UNITE44713', '9250', '120', '4335741', '29408');
 
+INSERT INTO Airline_Complaints VALUES('002ALASK44774', '16', '0', '3', '8', '12', '21', '6', '3', '1', '0', '1');
+INSERT INTO Airline_Complaints VALUES('002ALASK44743', '15', '1', '1', '3', '9', '11', '8', '5', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('002ALASK44713', '14', '4', '9', '3', '6', '12', '2', '4', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('003ALLEG44774', '40', '1', '11', '6', '26', '10', '6', '21', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('003ALLEG44743', '32', '0', '9', '6', '22', '17', '4', '21', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('003ALLEG44713', '52', '6', '18', '4', '30', '9', '4', '15', '0', '0', '1');
+INSERT INTO Airline_Complaints VALUES('004AMERI44774', '468', '22', '46', '58', '134', '135', '54', '28', '1', '0', '9');
+INSERT INTO Airline_Complaints VALUES('004AMERI44743', '396', '27', '51', '52', '139', '124', '50', '39', '0', '0', '5');
+INSERT INTO Airline_Complaints VALUES('004AMERI44713', '356', '28', '55', '52', '138', '87', '34', '25', '0', '0', '5');
+INSERT INTO Airline_Complaints VALUES('005AVELO44774', '5', '0', '1', '1', '4', '2', '3', '0', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('005AVELO44743', '2', '0', '2', '0', '1', '3', '3', '0', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('007BREEZ44774', '3', '0', '1', '1', '1', '2', '0', '1', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('007BREEZ44743', '9', '0', '0', '1', '7', '5', '2', '3', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('007BREEZ44713', '10', '0', '2', '0', '10', '2', '1', '0', '1', '0', '0');
+INSERT INTO Airline_Complaints VALUES('008CAPEA44774', '3', '2', '0', '0', '0', '2', '0', '0', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('010DELTA44774', '180', '10', '26', '20', '78', '61', '34', '21', '1', '0', '1');
+INSERT INTO Airline_Complaints VALUES('010DELTA44743', '165', '10', '20', '15', '73', '52', '35', '19', '2', '0', '1');
+INSERT INTO Airline_Complaints VALUES('010DELTA44713', '173', '12', '26', '92', '54', '42', '23', '20', '1', '0', '6');
+INSERT INTO Airline_Complaints VALUES('011EASTE44743', '2', '0', '0', '0', '4', '0', '0', '0', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('012ENDEA44774', '42', '1', '3', '2', '12', '4', '3', '2', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('012ENDEA44743', '32', '1', '2', '1', '13', '4', '6', '0', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('012ENDEA44713', '29', '1', '1', '1', '15', '4', '4', '0', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('013ENVOY44774', '16', '2', '3', '2', '3', '4', '1', '0', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('013ENVOY44743', '11', '5', '1', '0', '3', '6', '2', '3', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('013ENVOY44713', '8', '6', '3', '1', '8', '13', '3', '1', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('014FRONT44774', '145', '12', '22', '39', '59', '52', '17', '6', '1', '0', '2');
+INSERT INTO Airline_Complaints VALUES('014FRONT44743', '116', '13', '19', '31', '69', '46', '14', '5', '0', '0', '1');
+INSERT INTO Airline_Complaints VALUES('014FRONT44713', '128', '19', '32', '17', '45', '51', '16', '10', '1', '0', '2');
+INSERT INTO Airline_Complaints VALUES('016HAWAI44774', '3', '0', '1', '7', '9', '8', '3', '0', '0', '0', '1');
+INSERT INTO Airline_Complaints VALUES('016HAWAI44743', '3', '0', '2', '6', '8', '3', '3', '2', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('016HAWAI44713', '10', '0', '1', '2', '9', '4', '0', '0', '1', '0', '2');
+INSERT INTO Airline_Complaints VALUES('017HORIZ44774', '3', '0', '0', '0', '0', '2', '0', '1', '0', '0', '1');
+INSERT INTO Airline_Complaints VALUES('018JETBL44774', '187', '4', '26', '15', '40', '46', '16', '18', '1', '0', '3');
+INSERT INTO Airline_Complaints VALUES('018JETBL44743', '110', '4', '21', '21', '38', '43', '22', '21', '0', '0', '1');
+INSERT INTO Airline_Complaints VALUES('018JETBL44713', '135', '2', '20', '9', '29', '25', '22', '18', '0', '0', '1');
+INSERT INTO Airline_Complaints VALUES('019MESAA44774', '11', '0', '0', '1', '0', '2', '1', '0', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('019MESAA44743', '8', '0', '1', '1', '2', '1', '0', '0', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('019MESAA44713', '10', '0', '0', '0', '4', '1', '0', '1', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('030OTHER44774', '6', '0', '3', '1', '5', '0', '0', '0', '0', '0', '6');
+INSERT INTO Airline_Complaints VALUES('030OTHER44743', '3', '1', '1', '0', '2', '4', '0', '1', '0', '0', '4');
+INSERT INTO Airline_Complaints VALUES('030OTHER44713', '0', '0', '3', '1', '5', '2', '1', '1', '0', '0', '2');
+INSERT INTO Airline_Complaints VALUES('021PIEDM44774', '2', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('021PIEDM44743', '14', '0', '2', '1', '1', '5', '0', '0', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('021PIEDM44713', '4', '1', '1', '1', '1', '1', '0', '1', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('022PSAAI44774', '26', '1', '5', '0', '2', '3', '0', '1', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('022PSAAI44743', '24', '2', '2', '0', '9', '6', '2', '1', '0', '0', '1');
+INSERT INTO Airline_Complaints VALUES('022PSAAI44713', '34', '1', '1', '1', '5', '2', '1', '2', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('023REPUB44774', '42', '3', '5', '2', '12', '9', '2', '2', '0', '0', '1');
+INSERT INTO Airline_Complaints VALUES('023REPUB44743', '30', '1', '2', '5', '6', '8', '1', '2', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('023REPUB44713', '27', '2', '1', '2', '11', '6', '2', '1', '0', '0', '1');
+INSERT INTO Airline_Complaints VALUES('024SILVE44774', '4', '1', '1', '1', '2', '0', '1', '0', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('024SILVE44743', '4', '1', '0', '0', '2', '4', '1', '1', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('024SILVE44713', '3', '3', '1', '0', '2', '5', '1', '1', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('025SKYWE44774', '24', '2', '7', '1', '5', '3', '1', '3', '1', '0', '1');
+INSERT INTO Airline_Complaints VALUES('025SKYWE44743', '11', '1', '2', '1', '4', '4', '3', '2', '0', '0', '1');
+INSERT INTO Airline_Complaints VALUES('025SKYWE44713', '20', '1', '6', '1', '8', '6', '3', '0', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('026SOUTH44774', '189', '6', '10', '9', '26', '31', '13', '15', '0', '0', '2');
+INSERT INTO Airline_Complaints VALUES('026SOUTH44743', '72', '3', '8', '14', '24', '13', '8', '14', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('026SOUTH44713', '71', '6', '6', '14', '21', '13', '10', '18', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('027SPIRI44774', '73', '8', '24', '37', '45', '39', '15', '9', '0', '0', '2');
+INSERT INTO Airline_Complaints VALUES('027SPIRI44743', '49', '9', '21', '28', '46', '43', '17', '12', '0', '0', '2');
+INSERT INTO Airline_Complaints VALUES('027SPIRI44713', '84', '6', '25', '21', '62', '36', '11', '7', '1', '0', '2');
+INSERT INTO Airline_Complaints VALUES('028SUNCO44774', '6', '0', '2', '1', '2', '2', '5', '1', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('028SUNCO44743', '12', '1', '3', '2', '4', '6', '2', '0', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('028SUNCO44713', '13', '0', '4', '3', '4', '8', '2', '1', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('029UNITE44774', '354', '15', '50', '46', '87', '156', '42', '21', '1', '0', '10');
+INSERT INTO Airline_Complaints VALUES('029UNITE44743', '215', '15', '48', '31', '84', '178', '31', '26', '1', '0', '9');
+INSERT INTO Airline_Complaints VALUES('029UNITE44713', '192', '17', '49', '47', '87', '121', '24', '11', '1', '0', '7');
+INSERT INTO Airline_Complaints VALUES('020OTHER44774', '2', '0', '1', '0', '2', '1', '0', '0', '0', '0', '0');
+INSERT INTO Airline_Complaints VALUES('020OTHER44743', '2', '0', '1', '0', '1', '0', '0', '1', '0', '0', '1');
+INSERT INTO Airline_Complaints VALUES('020OTHER44713', '1', '0', '1', '1', '0', '0', '1', '1', '0', '0', '0');
+
+INSERT INTO DSCRM_By_Type VALUES ('002ALASK44713', '1', '0', '0', '0', '0', '0', '0');
+INSERT INTO DSCRM_By_Type VALUES ('004AMERI44713', '1', '0', '1', '1', '0', '0', '0');
+INSERT INTO DSCRM_By_Type VALUES ('004AMERI44743', '3', '0', '1', '0', '0', '0', '0');
+INSERT INTO DSCRM_By_Type VALUES ('004AMERI44774', '1', '0', '0', '0', '0', '0', '0');
+INSERT INTO DSCRM_By_Type VALUES ('010DELTA44713', '0', '0', '0', '0', '1', '1', '0');
+INSERT INTO DSCRM_By_Type VALUES ('010DELTA44743', '0', '0', '1', '1', '0', '0', '0');
+INSERT INTO DSCRM_By_Type VALUES ('010DELTA44774', '2', '0', '1', '0', '0', '0', '0');
+INSERT INTO DSCRM_By_Type VALUES ('014FRONT44743', '0', '0', '0', '0', '1', '0', '0');
+INSERT INTO DSCRM_By_Type VALUES ('014FRONT44774', '0', '0', '1', '0', '0', '0', '0');
+INSERT INTO DSCRM_By_Type VALUES ('018JETBL44743', '2', '0', '0', '0', '0', '0', '0');
+INSERT INTO DSCRM_By_Type VALUES ('018JETBL44774', '2', '0', '0', '0', '0', '0', '0');
+INSERT INTO DSCRM_By_Type VALUES ('022PSAAI44713', '1', '0', '0', '0', '0', '0', '0');
+INSERT INTO DSCRM_By_Type VALUES ('023REPUB44743', '0', '0', '0', '0', '1', '0', '0');
+INSERT INTO DSCRM_By_Type VALUES ('026SOUTH44713', '2', '0', '0', '1', '0', '0', '0');
+INSERT INTO DSCRM_By_Type VALUES ('026SOUTH44774', '2', '0', '0', '0', '0', '0', '0');
+INSERT INTO DSCRM_By_Type VALUES ('027SPIRI44774', '1', '0', '0', '0', '0', '0', '0');
+INSERT INTO DSCRM_By_Type VALUES ('029UNITE44713', '2', '0', '0', '1', '0', '0', '0');
+INSERT INTO DSCRM_By_Type VALUES ('029UNITE44774', '3', '1', '0', '0', '0', '0', '0');
+
 SELECT * FROM Airport;
 SELECT * FROM Airline;
 SELECT * FROM Airport_DateTime_ID;
@@ -1437,6 +1592,9 @@ SELECT * FROM Excessive_Tarmac_Delays;
 SELECT * FROM Monthly_Enplanements;
 SELECT * FROM Airline_Arr_Op_Carrier;
 SELECT * FROM Mishandling_By_Op_Carrier;
+SELECT * FROM Airline_Complaints;
+Select * FROM DSCRM_By_Type;
+SELECT * FROM Delay_Cause_Op_Carrier;
 
 /*Of all the carriers having tarmac delays over three hours, what is the total amount of excessive delay time by carrier, by month?*/
 /*Which carrier has the widest percentage gap between the number of mishandled bags and the number of mishandled scooters and wheelchairs? Show by month.*/
