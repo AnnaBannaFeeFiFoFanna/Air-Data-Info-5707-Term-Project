@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS Mishandling_By_Op_Carrier CASCADE;
+DROP TABLE IF EXISTS Airline_Arr_Op_Carrier CASCADE;
+DROP TABLE IF EXISTS Monthly_Enplanements CASCADE;
 DROP TABLE IF EXISTS Timeliness_By_Airport CASCADE;
 DROP TABLE IF EXISTS Excessive_Tarmac_Delays CASCADE;
 DROP TABLE IF EXISTS Flight_Num_Org_and_Dest CASCADE;
@@ -57,6 +60,38 @@ Diversion_Airport CHAR(3),
 Length_of_Delay TIME NOT NULL,
 CONSTRAINT PKExcessive_Tarmac_Delays PRIMARY KEY (Tarmac_Incident_ID),
 CONSTRAINT FKAirline_ID FOREIGN KEY (Airline_ID) REFERENCES Airline(Airline_ID) ON DELETE CASCADE
+);
+
+CREATE TABLE Monthly_Enplanements (
+Airline_Date_ID CHAR(13) NOT NULL,
+Airline_ID CHAR(8) NOT NULL,
+/*Data is stored as first of month, but is cumulative total for month.*/
+Month_and_Year DATE NOT NULL,
+Enplanements INT NOT NULL,
+/*Airline_Date_ID might be the only valid Key.*/
+CONSTRAINT PKAirline_Date_ID PRIMARY KEY (Airline_Date_ID),
+CONSTRAINT FKMonthly_Enplanements_Airline_ID FOREIGN KEY (Airline_ID) REFERENCES Airline(Airline_ID) ON DELETE CASCADE
+);
+
+CREATE TABLE Airline_Arr_Op_Carrier (
+Airport_ID CHAR(3) NOT NULL,
+Airline_ID CHAR(8) NOT NULL,
+Airline_Date_ID CHAR(13) NOT NULL,
+Number_of_Arrivals INT NOT NULL,
+Percent_Arr_On_Time FLOAT NOT NULL,
+CONSTRAINT FKAirline_Arr_Op_CarrierAirport_ID FOREIGN KEY (Airport_ID) REFERENCES Airport(Airport_ID) ON DELETE CASCADE,
+CONSTRAINT FKAirline_Arr_Op_CarrierAirline_ID FOREIGN KEY (Airline_ID) REFERENCES Airline(Airline_ID) ON DELETE CASCADE,
+/*Airline_Date_ID might be the only valid Foreign Key.*/
+CONSTRAINT FKAirline_Arr_Op_Carrier_Airline_Date_ID FOREIGN KEY (Airline_Date_ID) REFERENCES Monthly_Enplanements(Airline_Date_ID) ON DELETE CASCADE
+);
+
+CREATE TABLE Mishandling_By_Op_Carrier (
+Airline_Date_ID CHAR(13) NOT NULL,
+WHLCHR_SCT_ENPLANED INT NOT NULL,
+WHLCHR_SCT_MISHAND INT NOT NULL,
+BAGS_ENPLANED INT NOT NULL,
+BAGS_MISHAND INT NOT NULL,
+CONSTRAINT FKMishandling_Airline_Date_ID FOREIGN KEY (Airline_Date_ID) REFERENCES Monthly_Enplanements(Airline_Date_ID) ON DELETE CASCADE
 );
 
 INSERT INTO Airport VALUES ('ATL', '30337', 'Atlanta', 'GA');
@@ -1253,6 +1288,145 @@ INSERT INTO Excessive_Tarmac_Delays VALUES ('003ALLEG1596447743626', '003ALLEG',
 INSERT INTO Excessive_Tarmac_Delays VALUES ('010DELTA452447775024', '010DELTA', '452', '2022-08-04', 'Origin', null, '03:29:00');
 INSERT INTO Excessive_Tarmac_Delays VALUES ('029UNITE2297447782969', '029UNITE', '2297', '2022-08-05', 'Origin', null, '03:29:00');
 
+INSERT INTO Monthly_Enplanements VALUES ('026SOUTH44774', '026SOUTH', '2022-08-01', '14288639');
+INSERT INTO Monthly_Enplanements VALUES ('004AMERI44774', '004AMERI', '2022-08-01', '13455020');
+INSERT INTO Monthly_Enplanements VALUES ('010DELTA44774', '010DELTA', '2022-08-01', '12856270');
+INSERT INTO Monthly_Enplanements VALUES ('029UNITE44774', '029UNITE', '2022-08-01', '10283317');
+INSERT INTO Monthly_Enplanements VALUES ('018JETBL44774', '018JETBL', '2022-08-01', '3680308');
+INSERT INTO Monthly_Enplanements VALUES ('025SKYWE44774', '025SKYWE', '2022-08-01', '3536042');
+INSERT INTO Monthly_Enplanements VALUES ('027SPIRI44774', '027SPIRI', '2022-08-01', '3383919');
+INSERT INTO Monthly_Enplanements VALUES ('002ALASK44774', '002ALASK', '2022-08-01', '2950595');
+INSERT INTO Monthly_Enplanements VALUES ('014FRONT44774', '014FRONT', '2022-08-01', '2282354');
+INSERT INTO Monthly_Enplanements VALUES ('003ALLEG44774', '003ALLEG', '2022-08-01', '1394561');
+INSERT INTO Monthly_Enplanements VALUES ('023REPUB44774', '023REPUB', '2022-08-01', '1383309');
+INSERT INTO Monthly_Enplanements VALUES ('013ENVOY44774', '013ENVOY', '2022-08-01', '1201041');
+INSERT INTO Monthly_Enplanements VALUES ('012ENDEA44774', '012ENDEA', '2022-08-01', '1080668');
+INSERT INTO Monthly_Enplanements VALUES ('022PSAAI44774', '022PSAAI', '2022-08-01', '1004985');
+INSERT INTO Monthly_Enplanements VALUES ('016HAWAI44774', '016HAWAI', '2022-08-01', '924816');
+INSERT INTO Monthly_Enplanements VALUES ('019MESAA44774', '019MESAA', '2022-08-01', '599449');
+INSERT INTO Monthly_Enplanements VALUES ('017HORIZ44774', '017HORIZ', '2022-08-01', '547453');
+INSERT INTO Monthly_Enplanements VALUES ('026SOUTH44743', '026SOUTH', '2022-07-01', '15092549');
+INSERT INTO Monthly_Enplanements VALUES ('004AMERI44743', '004AMERI', '2022-07-01', '14142715');
+INSERT INTO Monthly_Enplanements VALUES ('010DELTA44743', '010DELTA', '2022-07-01', '12953427');
+INSERT INTO Monthly_Enplanements VALUES ('029UNITE44743', '029UNITE', '2022-07-01', '10839108');
+INSERT INTO Monthly_Enplanements VALUES ('018JETBL44743', '018JETBL', '2022-07-01', '3695885');
+INSERT INTO Monthly_Enplanements VALUES ('025SKYWE44743', '025SKYWE', '2022-07-01', '3628383');
+INSERT INTO Monthly_Enplanements VALUES ('027SPIRI44743', '027SPIRI', '2022-07-01', '3501941');
+INSERT INTO Monthly_Enplanements VALUES ('002ALASK44743', '002ALASK', '2022-07-01', '3019124');
+INSERT INTO Monthly_Enplanements VALUES ('014FRONT44743', '014FRONT', '2022-07-01', '2368413');
+INSERT INTO Monthly_Enplanements VALUES ('003ALLEG44743', '003ALLEG', '2022-07-01', '1948529');
+INSERT INTO Monthly_Enplanements VALUES ('023REPUB44743', '023REPUB', '2022-07-01', '1523351');
+INSERT INTO Monthly_Enplanements VALUES ('013ENVOY44743', '013ENVOY', '2022-07-01', '1286650');
+INSERT INTO Monthly_Enplanements VALUES ('022PSAAI44743', '022PSAAI', '2022-07-01', '1129293');
+INSERT INTO Monthly_Enplanements VALUES ('012ENDEA44743', '012ENDEA', '2022-07-01', '1116754');
+INSERT INTO Monthly_Enplanements VALUES ('016HAWAI44743', '016HAWAI', '2022-07-01', '971203');
+INSERT INTO Monthly_Enplanements VALUES ('019MESAA44743', '019MESAA', '2022-07-01', '675236');
+INSERT INTO Monthly_Enplanements VALUES ('017HORIZ44743', '017HORIZ', '2022-07-01', '555907');
+INSERT INTO Monthly_Enplanements VALUES ('026SOUTH44713', '026SOUTH', '2022-06-01', '14364481');
+INSERT INTO Monthly_Enplanements VALUES ('004AMERI44713', '004AMERI', '2022-06-01', '13668140');
+INSERT INTO Monthly_Enplanements VALUES ('010DELTA44713', '010DELTA', '2022-06-01', '12707725');
+INSERT INTO Monthly_Enplanements VALUES ('029UNITE44713', '029UNITE', '2022-06-01', '10248599');
+INSERT INTO Monthly_Enplanements VALUES ('025SKYWE44713', '025SKYWE', '2022-06-01', '3746239');
+INSERT INTO Monthly_Enplanements VALUES ('018JETBL44713', '018JETBL', '2022-06-01', '3388329');
+INSERT INTO Monthly_Enplanements VALUES ('027SPIRI44713', '027SPIRI', '2022-06-01', '3326738');
+INSERT INTO Monthly_Enplanements VALUES ('002ALASK44713', '002ALASK', '2022-06-01', '2805411');
+INSERT INTO Monthly_Enplanements VALUES ('014FRONT44713', '014FRONT', '2022-06-01', '2301154');
+INSERT INTO Monthly_Enplanements VALUES ('003ALLEG44713', '003ALLEG', '2022-06-01', '1756153');
+INSERT INTO Monthly_Enplanements VALUES ('023REPUB44713', '023REPUB', '2022-06-01', '1595671');
+INSERT INTO Monthly_Enplanements VALUES ('013ENVOY44713', '013ENVOY', '2022-06-01', '1218703');
+INSERT INTO Monthly_Enplanements VALUES ('022PSAAI44713', '022PSAAI', '2022-06-01', '1136060');
+INSERT INTO Monthly_Enplanements VALUES ('012ENDEA44713', '012ENDEA', '2022-06-01', '1102055');
+INSERT INTO Monthly_Enplanements VALUES ('016HAWAI44713', '016HAWAI', '2022-06-01', '922057');
+INSERT INTO Monthly_Enplanements VALUES ('019MESAA44713', '019MESAA', '2022-06-01', '703966');
+INSERT INTO Monthly_Enplanements VALUES ('017HORIZ44713', '017HORIZ', '2022-06-01', '560178');
+
+/*Current data only for August 2022 (USDOT October 2022 report), and only Alaska Airlines, Allegiant Air, American Airlines, and Delta Air Lines.*/
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('ATL', '002ALASK', '002ALASK44774', '124', '89.5');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('BNA', '002ALASK', '002ALASK44774', '62', '79');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('BOS', '002ALASK', '002ALASK44774', '213', '73.7');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('BWI', '002ALASK', '002ALASK44774', '62', '82.3');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('CLT', '002ALASK', '002ALASK44774', '0', '0');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('DAL', '002ALASK', '002ALASK44774', '62', '80.6');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('DCA', '002ALASK', '002ALASK44774', '155', '65.2');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('DEN', '002ALASK', '002ALASK44774', '189', '76.2');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('ATL', '003ALLEG', '003ALLEG44774', '0', '0');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('BNA', '003ALLEG', '003ALLEG44774', '218', '62.8');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('BOS', '003ALLEG', '003ALLEG44774', '66', '78.8');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('BWI', '003ALLEG', '003ALLEG44774', '23', '73.9');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('CLT', '003ALLEG', '003ALLEG44774', '0', '0');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('DAL', '003ALLEG', '003ALLEG44774', '0', '0');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('DCA', '003ALLEG', '003ALLEG44774', '0', '0');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('DEN', '003ALLEG', '003ALLEG44774', '48', '81.3');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('ATL', '004AMERI', '004AMERI44774', '536', '64.2');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('BNA', '004AMERI', '004AMERI44774', '607', '64.7');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('BOS', '004AMERI', '004AMERI44774', '1846', '67.4');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('BWI', '004AMERI', '004AMERI44774', '388', '66.5');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('CLT', '004AMERI', '004AMERI44774', '9523', '74.7');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('DAL', '004AMERI', '004AMERI44774', '0', '0');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('DCA', '004AMERI', '004AMERI44774', '2655', '68.6');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('DEN', '004AMERI', '004AMERI44774', '754', '74.4');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('ATL', '010DELTA', '010DELTA44774', '18263', '86.4');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('BNA', '010DELTA', '010DELTA44774', '717', '82.8');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('BOS', '010DELTA', '010DELTA44774', '1896', '69.5');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('BWI', '010DELTA', '010DELTA44774', '424', '82.1');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('CLT', '010DELTA', '010DELTA44774', '463', '85.3');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('DAL', '010DELTA', '010DELTA44774', '151', '84.8');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('DCA', '010DELTA', '010DELTA44774', '701', '77.3');
+INSERT INTO Airline_Arr_Op_Carrier VALUES ('DEN', '010DELTA', '010DELTA44774', '955', '83.5');
+
+/*Current data only for June-August 2022 (USDOT August-October 2022 reports).*/
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('002ALASK44774', '2425', '48', '2021528', '13133');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('002ALASK44743', '2427', '37', '2049788', '13075');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('002ALASK44713', '2345', '51', '1910360', '14303');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('003ALLEG44774', '1203', '5', '506851', '641');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('003ALLEG44743', '1693', '12', '778753', '1291');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('003ALLEG44713', '1544', '15', '724415', '1193');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('004AMERI44774', '8606', '162', '5694454', '56421');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('004AMERI44743', '9027', '180', '6049441', '60276');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('004AMERI44713', '8324', '173', '6095884', '74773');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('010DELTA44774', '15348', '106', '6262390', '28300');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('010DELTA44743', '15049', '130', '6429119', '32194');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('010DELTA44713', '14510', '142', '6506383', '38243');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('012ENDEA44774', '1194', '5', '773205', '3036');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('012ENDEA44743', '1306', '12', '791485', '3586');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('012ENDEA44713', '1303', '6', '806696', '4132');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('013ENVOY44774', '779', '24', '791962', '6852');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('013ENVOY44743', '885', '14', '843685', '6950');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('013ENVOY44713', '834', '13', '805355', '8171');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('014FRONT44774', '2076', '33', '794732', '4069');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('014FRONT44743', '2094', '24', '867131', '3780');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('014FRONT44713', '2207', '37', '894188', '3511');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('016HAWAI44774', '615', '7', '528014', '2011');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('016HAWAI44743', '654', '4', '593323', '1686');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('016HAWAI44713', '680', '9', '593769', '1977');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('017HORIZ44774', '422', '9', '424251', '1842');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('017HORIZ44743', '400', '3', '434125', '1950');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('017HORIZ44713', '459', '5', '439907', '2485');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('018JETBL44774', '2602', '135', '1305429', '7692');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('018JETBL44743', '2582', '155', '1370268', '9483');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('018JETBL44713', '2388', '130', '1282314', '9672');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('019MESAA44774', '530', '8', '383909', '2946');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('019MESAA44743', '552', '9', '428679', '3089');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('019MESAA44713', '635', '9', '468331', '3992');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('022PSAAI44774', '665', '12', '922908', '6770');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('022PSAAI44743', '707', '22', '1031410', '9318');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('022PSAAI44713', '732', '13', '1036324', '9615');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('023REPUB44774', '1161', '18', '742781', '6371');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('023REPUB44743', '1194', '13', '771720', '6927');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('023REPUB44713', '1297', '17', '818969', '8442');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('025SKYWE44774', '3903', '49', '2468788', '12128');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('025SKYWE44743', '4064', '40', '2545314', '13206');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('025SKYWE44713', '4256', '45', '2666705', '15213');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('026SOUTH44774', '15792', '271', '10806531', '69621');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('026SOUTH44743', '15634', '299', '11708474', '69403');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('026SOUTH44713', '15729', '299', '11244255', '62337');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('027SPIRI44774', '710', '48', '1096404', '5206');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('027SPIRI44743', '781', '60', '1197843', '6376');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('027SPIRI44713', '719', '48', '1202087', '6737');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('029UNITE44774', '8948', '111', '4193681', '27463');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('029UNITE44743', '9381', '104', '4375410', '26493');
+INSERT INTO Mishandling_By_Op_Carrier VALUES ('029UNITE44713', '9250', '120', '4335741', '29408');
+
 SELECT * FROM Airport;
 SELECT * FROM Airline;
 SELECT * FROM Airport_DateTime_ID;
@@ -1260,5 +1434,9 @@ SELECT * FROM Flight_Num_Org_and_Dest;
 SELECT * FROM Timeliness_By_Airport;
 SELECT * FROM Flight_Num_Org_and_Dest;
 SELECT * FROM Excessive_Tarmac_Delays;
+SELECT * FROM Monthly_Enplanements;
+SELECT * FROM Airline_Arr_Op_Carrier;
+SELECT * FROM Mishandling_By_Op_Carrier;
 
 /*Of all the carriers having tarmac delays over three hours, what is the total amount of excessive delay time by carrier, by month?*/
+/*Which carrier has the widest percentage gap between the number of mishandled bags and the number of mishandled scooters and wheelchairs? Show by month.*/
