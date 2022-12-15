@@ -136,6 +136,20 @@ CONSTRAINT FKDSCRM_Airline_Date_ID FOREIGN KEY (Airline_Date_ID)
 REFERENCES Monthly_Enplanements(Airline_Date_ID) ON DELETE CASCADE
 );
 
+CREATE TABLE Delay_Cause_Op_Carrier (
+Airline_Date_ID CHAR(13) NOT NULL,
+Flights_on_Time INT NOT NULL,
+Cancelled INT NOT NULL,
+Diverted INT NOT NULL,
+Air_Carrier_Delay INT NOT NULL,
+Extreme_WTHR_Delay INT NOT NULL,
+NAT_AV_SYS_Delay INT NOT NULL,
+Security_Delay INT NOT NULL,
+Late_Arr_Craft_Delay INT NOT NULL,
+CONSTRAINT FKDelay_Airline_Date_ID FOREIGN KEY (Airline_Date_ID)
+REFERENCES Monthly_Enplanements(Airline_Date_ID) ON DELETE CASCADE
+);
+
 INSERT INTO Airport VALUES ('ATL', '30337', 'Atlanta', 'GA');
 INSERT INTO Airport VALUES ('BWI', '21240', 'Baltimore', 'MD');
 INSERT INTO Airport VALUES ('BOS', '02128', 'Boston', 'MA');
@@ -1305,6 +1319,7 @@ INSERT INTO Flight_Num_Org_and_Dest VALUES ('4977', '012ENDEA', 'LGA', 'PIT');
 INSERT INTO Flight_Num_Org_and_Dest VALUES ('5639', '023REPUB', 'JFK', 'CMH');
 INSERT INTO Flight_Num_Org_and_Dest VALUES ('6086', '019MESAA', 'MKE', 'IAH');
 
+/*First 25 rows of August 2022 only (from USDOT October 2022 report).*/
 INSERT INTO Excessive_Tarmac_Delays VALUES ('029UNITE2632447782832', '029UNITE', '2632', '2022-08-05', 'Origin', null, ' 05:41:00');
 INSERT INTO Excessive_Tarmac_Delays VALUES ('029UNITE556447776368', '029UNITE', '556', '2022-08-04', 'Origin', null, '04:55:00');
 INSERT INTO Excessive_Tarmac_Delays VALUES ('029UNITE2158447781073', '029UNITE', '2158', '2022-08-05', 'Origin', null, '04:52:00');
@@ -1404,7 +1419,8 @@ INSERT INTO Monthly_Enplanements VALUES ('020OTHER44774', '020OTHER', '2022-08-0
 INSERT INTO Monthly_Enplanements VALUES ('020OTHER44743', '020OTHER', '2022-07-01', null);
 INSERT INTO Monthly_Enplanements VALUES ('020OTHER44713', '020OTHER', '2022-06-01', null);
 
-/*Current data only for August 2022 (USDOT October 2022 report), and only Alaska Airlines, Allegiant Air, American Airlines, and Delta Air Lines.*/
+/*Current data only for August 2022 (USDOT October 2022 report),
+and only Alaska Airlines, Allegiant Air, American Airlines, and Delta Air Lines.*/
 INSERT INTO Airline_Arr_Op_Carrier VALUES ('ATL', '002ALASK', '002ALASK44774', '124', '89.5');
 INSERT INTO Airline_Arr_Op_Carrier VALUES ('BNA', '002ALASK', '002ALASK44774', '62', '79');
 INSERT INTO Airline_Arr_Op_Carrier VALUES ('BOS', '002ALASK', '002ALASK44774', '213', '73.7');
@@ -1582,6 +1598,58 @@ INSERT INTO DSCRM_By_Type VALUES ('027SPIRI44774', '1', '0', '0', '0', '0', '0',
 INSERT INTO DSCRM_By_Type VALUES ('029UNITE44713', '2', '0', '0', '1', '0', '0', '0');
 INSERT INTO DSCRM_By_Type VALUES ('029UNITE44774', '3', '1', '0', '0', '0', '0', '0');
 
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('002ALASK44774', '16572', '134', '47', '1010', '102', '1406', '56', '1187');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('002ALASK44743', '16549', '100', '51', '1112', '75', '1356', '81', '1064');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('002ALASK44713', '14927', '160', '50', '1134', '69', '1507', '23', '1047');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('003ALLEG44774', '6171', '103', '34', '697', '245', '725', '28', '1280');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('003ALLEG44743', '7577', '184', '29', '1007', '339', '1183', '21', '2094');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('003ALLEG44713', '6793', '368', '34', '987', '219', '1179', '24', '1907');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('004AMERI44774', '55173', '3302', '333', '6254', '1257', '4734', '58', '7216');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('004AMERI44743', '52093', '2448', '263', '7062', '1034', '4626', '66', '9022');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('004AMERI44713', '48104', '4713', '285', '7806', '1014', '4576', '49', '8431');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('010DELTA44774', '65572', '572', '192', '5203', '617', '3339', '11', '3168');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('010DELTA44743', '62689', '788', '177', '6505', '574', '3502', '13', '4518');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('010DELTA44713', '59281', '2946', '197', '6699', '540', '3078', '13', '4132');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('012ENDEA44774', '15550', '1017', '26', '961', '141', '1234', '1', '964');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('012ENDEA44743', '15311', '1117', '78', '1206', '150', '1127', '2', '1174');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('012ENDEA44713', '15231', '1413', '56', '1059', '147', '956', '0', '1013');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('013ENVOY44774', '17218', '542', '67', '961', '451', '1264', '11', '1352');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('013ENVOY44743', '17814', '130', '58', '982', '266', '1165', '9', '1431');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('013ENVOY44713', '16628', '143', '64', '963', '291', '1098', '7', '1091');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('014FRONT44774', '9489', '126', '35', '1216', '116', '1087', '0', '1268');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('014FRONT44743', '9551', '145', '33', '1070', '105', '1171', '0', '1101');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('014FRONT44713', '8637', '136', '28', '1187', '52', '1280', '0', '1109');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('016HAWAI44774', '4790', '9', '6', '960', '1', '49', '9', '691');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('016HAWAI44743', '5450', '6', '7', '815', '7', '15', '19', '436');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('016HAWAI44713', '4855', '7', '6', '935', '4', '32', '18', '429');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('017HORIZ44774', '7240', '18', '4', '362', '17', '247', '6', '352');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('017HORIZ44743', '7423', '35', '9', '406', '22', '218', '4', '399');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('017HORIZ44713', '7106', '50', '10', '527', '12', '431', '4', '636');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('018JETBL44774', '15231', '551', '77', '2894', '239', '1909', '37', '2162');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('018JETBL44743', '15412', '415', '112', '3011', '196', '1710', '26', '1985');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('018JETBL44713', '13072', '743', '100', '3084', '206', '1984', '23', '2111');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('019MESAA44774', '6276', '385', '51', '750', '204', '443', '2', '784');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('019MESAA44743', '7392', '200', '19', '790', '158', '365', '1', '665');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('019MESAA44713', '7550', '216', '20', '884', '150', '353', '7', '728');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('022PSAAI44774', '13628', '397', '52', '853', '351', '895', '5', '1211');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('022PSAAI44743', '13675', '540', '92', '1191', '422', '1400', '13', '1819');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('022PSAAI44713', '14182', '795', '48', '1171', '270', '1076', '12', '1724');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('023REPUB44774', '20003', '1846', '52', '1283', '213', '1931', '6', '1350');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('023REPUB44743', '20029', '1195', '97', '1434', '276', '2038', '3', '1638');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('023REPUB44713', '19674', '2484', '86', '1851', '185', '2121', '2', '1728');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('025SKYWE44774', '52832', '876', '181', '6124', '1070', '395', '19', '2201');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('025SKYWE44743', '54054', '507', '220', '6646', '978', '549', '13', '2258');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('025SKYWE44713', '54102', '431', '160', '7537', '806', '284', '31', '2687');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('026SOUTH44774', '80441', '3157', '356', '12565', '627', '4724', '152', '16867');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('026SOUTH44743', '81477', '1843', '382', '11952', '584', '4882', '125', '16599');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('026SOUTH44713', '79213', '1296', '236', '11273', '357', '4408', '84', '14135');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('027SPIRI44774', '15980', '176', '43', '840', '215', '1590', '63', '673');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('027SPIRI44743', '15277', '68', '32', '979', '265', '1884', '72', '815');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('027SPIRI44713', '13970', '227', '46', '1232', '211', '1897', '41', '930');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('029UNITE44774', '42933', '1190', '234', '3569', '484', '3005', '8', '3494');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('029UNITE44743', '42655', '825', '203', '4048', '564', '3103', '1', '4110');
+INSERT INTO Delay_Cause_Op_Carrier VALUES ('029UNITE44713', '39830', '1748', '228', '4004', '376', '2968', '0', '3951');
+
 SELECT * FROM Airport;
 SELECT * FROM Airline;
 SELECT * FROM Airport_DateTime_ID;
@@ -1596,5 +1664,83 @@ SELECT * FROM Airline_Complaints;
 Select * FROM DSCRM_By_Type;
 SELECT * FROM Delay_Cause_Op_Carrier;
 
-/*Of all the carriers having tarmac delays over three hours, what is the total amount of excessive delay time by carrier, by month?*/
-/*Which carrier has the widest percentage gap between the number of mishandled bags and the number of mishandled scooters and wheelchairs? Show by month.*/
+/*Of all the carriers having tarmac delays over three hours in August of 2022, what is the average amount of excessive delay time by carrier?
+Order by number of excessive tarmac delays, and then average amount of tarmac delay time, in descending order. Use the common name of the airline.
+Show only carriers having more than one excessive tarmac delays.*/
+Select DISTINCT C.Carrier,
+MONTH(TD.Tar_Day_Month_Year),
+COUNT(DISTINCT(TD.Length_of_Delay)),
+TIME(AVG(TD.Length_of_Delay))
+FROM Excessive_Tarmac_Delays AS TD
+JOIN Airline as C ON C.Airline_ID = TD.Airline_ID
+GROUP BY C.Carrier, MONTH(TD.Tar_Day_Month_Year)
+HAVING COUNT(DISTINCT(TD.Length_of_Delay)) >= 2
+Order by COUNT(DISTINCT(TD.Length_of_Delay)) DESC, TIME(AVG(TD.Length_of_Delay)) DESC;
+
+/*From June to August of 2022, which carrier has the widest absolute value percentage gap between the number of mishandled bags and the number of mishandled scooters and wheelchairs?
+Alias excessively long column names. Show by month.*/
+Select DISTINCT C.Carrier, MONTH(ME.Month_and_Year) AS Month,
+MIS.Bags_Mishand/MIS.Bags_Enplaned AS Percent_Bags_Mishandled,
+MIS.WHLCHR_SCT_Mishand/MIS.WHLCHR_SCT_ENPLANED  AS Percent_WS_Mishandled,
+ABS(MIS.Bags_Mishand/MIS.Bags_Enplaned-MIS.WHLCHR_SCT_Mishand/MIS.WHLCHR_SCT_ENPLANED)
+	AS Absolute_Difference
+FROM Mishandling_By_Op_Carrier AS MIS
+JOIN Monthly_Enplanements AS ME ON ME.Airline_Date_ID = MIS.Airline_Date_ID
+JOIN Airline AS C ON C.Airline_ID = ME.Airline_ID
+Group BY  C.Carrier, MONTH(ME.Month_and_Year)
+ORDER BY Absolute_Difference DESC;
+
+/*From June to August of 2022, which carrier(s) received the largest percentage of refund complaints per the carrier's monthly enplanements?
+Alias excessively long column names. Show by month. Increase decimal places as needed to show presence of percent of refund complaints per enplanements.
+Do not include information where the number of enplanements is not available, or airline has no refund complaints.*/
+Select DISTINCT C.Carrier,
+MONTH(ME.Month_and_Year) AS Month,
+ME.Enplanements, AC.Refunds_C_BY_D_RCVD AS Refund_Complaints,
+CAST((AC.Refunds_C_BY_D_RCVD/ME.Enplanements)
+	AS DECIMAL(10,10)) AS Percent_Refund_Complaint
+FROM Monthly_Enplanements AS ME
+JOIN Airline AS C ON C.Airline_ID = ME.Airline_ID
+JOIN Airline_Complaints AS AC ON AC.Airline_Date_ID = ME.Airline_Date_ID
+WHERE ME.Enplanements IS NOT NULL
+AND AC.Refunds_C_BY_D_RCVD > 0
+Group BY  C.Carrier, MONTH(ME.Month_and_Year)
+ORDER BY Percent_Refund_Complaint DESC;
+
+/*Which airline had the greatest decrease in mishandled baggage over the summer of 2022?*/
+CREATE VIEW All_June_Mishandled_Bags AS
+SELECT C.Carrier, MIS.Bags_Mishand/MIS.Bags_Enplaned AS June_bags
+FROM Mishandling_By_Op_Carrier AS MIS
+JOIN Monthly_Enplanements AS ME ON ME.Airline_Date_ID = MIS.Airline_Date_ID
+JOIN Airline AS C ON C.Airline_ID = ME.Airline_ID
+WHERE MONTH(Month_and_Year) = 6
+GROUP BY Carrier;
+
+CREATE VIEW All_August_Mishandled_Bags AS
+SELECT C.Carrier, MIS.Bags_Mishand/MIS.Bags_Enplaned AS August_bags
+FROM Mishandling_By_Op_Carrier AS MIS
+JOIN Monthly_Enplanements AS ME ON ME.Airline_Date_ID = MIS.Airline_Date_ID
+JOIN Airline AS C ON C.Airline_ID = ME.Airline_ID
+WHERE MONTH(Month_and_Year) = 8
+GROUP BY Carrier;
+
+SELECT All_August_Mishandled_Bags.Carrier,
+June_bags, August_bags,
+(August_bags-June_bags) AS Mishandle_Decrease
+FROM All_August_Mishandled_Bags
+JOIN All_June_Mishandled_Bags
+ON All_August_Mishandled_Bags.Carrier = All_June_Mishandled_Bags.Carrier
+WHERE August_bags < June_bags
+ORDER BY (August_bags-June_bags) ASC;
+
+/*In August of 2022, what were the worst three airports for American Airlines arriving on-time?
+Include airport city and state.*/
+Select AID.Airport_City,
+AID.Airport_State, Op.Airport_ID,
+Op.Percent_Arr_On_Time from Airline_Arr_Op_Carrier AS Op
+JOIN Monthly_Enplanements AS ME ON ME.Airline_Date_ID = Op.Airline_Date_ID
+JOIN Airport AS AID ON AID.Airport_ID = Op.Airport_ID
+WHERE ME.Airline_ID = '004AMERI'
+AND Op.Number_of_Arrivals > 0
+AND Month(ME.Month_and_Year) = 8
+ORDER BY Op.Percent_Arr_On_Time ASC
+LIMIT 3;
